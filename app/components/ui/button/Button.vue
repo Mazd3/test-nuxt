@@ -1,23 +1,30 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+
 const props = withDefaults(defineProps<{
     variant?: 'primary' | 'outline' | 'ghost';
     square?: boolean;
+    as?: string;
 }>(), {
     variant: 'primary',
     square: false,
+    as: 'button',
 });
+
+const buttonClasses = computed(() => [
+    `button--${props.variant}`,
+    { 'button--square': props.square },
+]);
 </script>
 
 <template>
-    <button 
-        class="button" 
-        :class="[
-            `button--${props.variant}`,
-            { 'button--square': props.square }
-        ]"
+    <component
+        :is="props.as"
+        class="button"
+        :class="buttonClasses"
     >
         <slot />
-    </button>
+    </component>
 </template>
 
 <style lang="scss" scoped>
@@ -31,6 +38,8 @@ const props = withDefaults(defineProps<{
     font-size: 16px;
     font-weight: 400;
     cursor: pointer;
+    border: none;
+    text-decoration: none;
 
     // VARIANTS
 
@@ -43,6 +52,11 @@ const props = withDefaults(defineProps<{
         background-color: var(--color-white);
         color: var(--color-black);
         border: 1px solid var(--color-black);
+
+        &:disabled {
+            border: none;
+            opacity: 1;
+        }
     }
 
     &--ghost {
